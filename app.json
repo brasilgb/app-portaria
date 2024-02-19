@@ -1,9 +1,17 @@
 {
   "expo": {
-    "scheme": "acme",
+    "name": "app-portaria",
+    "slug": "app-portaria",
+    "scheme": "app-portaria",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
-    "web": {
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#29ABE2"
+    },
+     "web": {
       "output": "static",
       "bundler": "metro"
     },
@@ -14,8 +22,6 @@
           "origin": "https://n"
         }
       ]
-    ],
-    "name": "app-teste",
-    "slug": "app-teste"
+    ]
   }
 }
