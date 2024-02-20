@@ -63,11 +63,13 @@ const Naturovos = () => {
         pager: values.pager,
       })
       .then((response) => {
-        const { success } = response.data.genericResponse;
-        if (success) {
-          Alert.alert("Sucesso", "Carga cadastrada com sucesso");
-          setLoading(false);
+        const { success, message } = response.data.genericResponse;
+        setLoading(false);
+        if (!success) {
+          Alert.alert("Erro", message);
+          return;
         }
+        Alert.alert("Sucesso", "Carga cadastrada com sucesso");
         setTransportadora([]);
         resetForm({});
       })

@@ -11,7 +11,7 @@
       "resizeMode": "cover",
       "backgroundColor": "#29ABE2"
     },
-     "web": {
+    "web": {
       "output": "static",
       "bundler": "metro"
     },
@@ -22,6 +22,17 @@
           "origin": "https://n"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": "https://n"
+      },
+      "eas": {
+        "projectId": "d15a14e3-012a-4bf0-96c7-adb9d6d22e32"
+      }
+    },
+    "android": {
+      "package": "com.andersonbrodrigues.appportaria"
+    }
   }
 }

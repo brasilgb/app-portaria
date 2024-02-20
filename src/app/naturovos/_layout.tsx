@@ -1,7 +1,6 @@
 import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
 import { Slot } from "expo-router"
-import "./../../global.css";
 import { StatusBar } from "expo-status-bar";
 import Header from "../../components/Header";
 

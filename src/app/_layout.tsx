@@ -3,6 +3,7 @@ import { Slot, useRouter } from "expo-router";
 import AuthProvider, { AuthContext } from "../contexts/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BackHandler } from "react-native";
+import "./../global.css";
 
 const Root = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const Root = () => {
     const verifyUser = async () => {
       const usuario: any = await AsyncStorage.getItem("Auth_user");
       const setUser = JSON.parse(usuario);
+      
       if (!setUser) {
         router.replace("sign-in");
       }

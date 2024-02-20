@@ -51,7 +51,7 @@ export default function AuthProvider({ children }: AuthProps) {
       if (!success) {
         setUser(undefined);
         Alert.alert("Erro de Acesso ", message);
-        throw new Error(`${message}\n\nDetalhes:\n${detailMessage}`);
+        return;
       }
       const portariaAccess = await validateAccessLevel(code, 2888, 10);
       let udata = {
