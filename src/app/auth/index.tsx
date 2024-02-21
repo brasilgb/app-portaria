@@ -8,12 +8,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../contexts/auth";
+import { AuthContext } from "../../contexts/auth";
 import { Formik } from "formik";
-import schema from "./schema";
+import schema from "../schema";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 interface SignInProps {
   code: string;
   filial: string;
@@ -97,7 +96,7 @@ const SignIn = () => {
       <ModalFilial />
       <View className="py-8">
         <Image
-          source={require("../../assets/logo-solar.png")}
+          source={require("../../../assets/logo-solar.png")}
           className="w-[320px] h-[116px]"
         />
       </View>
@@ -159,14 +158,14 @@ const SignIn = () => {
                 onChangeText={handleChange("password")}
                 onBlur={() => setFieldTouched("password")}
                 value={values.password}
-                secureTextEntry={showPassword ? true : false}
+                secureTextEntry={!showPassword ? true : false}
               />
               {touched && errors && (
                 <Text className="self-end pr-6 pt-1 text-base text-red-600">
                   {errors.password}
                 </Text>
               )}
-              {showPassword ? (
+              {!showPassword ? (
                 <Ionicons
                   name="eye"
                   size={32}
@@ -206,7 +205,7 @@ const SignIn = () => {
             </Pressable>
             <View className="items-center my-6">
               <Text className="text-sm text-gray-400 font-Poppins_500Medium">
-                Grupo Solar - App Portaria v 1.0.1
+                Grupo Solar - App Portaria v{process.env.EXPO_PUBLIC_APP_VERSION}
               </Text>
             </View>
           </View>

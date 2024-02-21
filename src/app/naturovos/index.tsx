@@ -115,9 +115,9 @@ const Naturovos = () => {
 
   const ItemView = ({ item }: any) => {
     return (
-      <Text 
-      className="text-sm font-medium py-0.5"
-      onPress={() => getItem(item)}
+      <Text
+        className="text-base font-medium py-1"
+        onPress={() => getItem(item)}
       >
         {item.codigo}
         {" - "}
@@ -349,11 +349,6 @@ const Naturovos = () => {
                         value={values.pager}
                         autoCapitalize="characters"
                       />
-                      {touched && errors && (
-                        <Text className="self-end pr-6 pt-1 text-base text-red-600">
-                          {errors.pager}
-                        </Text>
-                      )}
                     </View>
                     <View className="mt-6">
                       <Pressable

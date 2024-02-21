@@ -142,7 +142,7 @@ export default function AuthProvider({ children }: AuthProps) {
   async function disconnect() {
     await AsyncStorage.clear().then(() => {
       setUser(undefined);
-      router.push("/sign-in");
+      router.push("auth");
     });
   }
 

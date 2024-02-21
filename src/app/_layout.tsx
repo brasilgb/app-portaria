@@ -7,6 +7,16 @@ import "./../global.css";
 
 const Root = () => {
   const router = useRouter();
+  const [onSetUser, setOnSetUser] = useState<any>(null);
+
+  useEffect(() => {
+    const usrLogged = async () => {
+      const usuario: any = await AsyncStorage.getItem("Auth_user");
+      const resuser = JSON.parse(usuario);
+      setOnSetUser(resuser);
+    };
+    usrLogged();
+  }, []);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -18,24 +28,20 @@ const Root = () => {
 
   useEffect(() => {
     const verifyUser = async () => {
-      const usuario: any = await AsyncStorage.getItem("Auth_user");
-      const setUser = JSON.parse(usuario);
-      
-      if (!setUser) {
-        router.replace("sign-in");
-      }
-      if (setUser) {
-        if (setUser?.filial === "1") {
+      if (!!onSetUser) {
+        if (onSetUser?.filial === "1") {
           router.replace("solar");
         }
 
-        if (setUser?.filial === "26") {
+        if (onSetUser?.filial === "26") {
           router.replace("naturovos");
         }
+      } else if (!!onSetUser === false) {
+        router.replace("auth");
       }
     };
     verifyUser();
-  }, [router]);
+  }, [router, onSetUser]);
 
   return (
     <AuthProvider>
