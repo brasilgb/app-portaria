@@ -9,14 +9,14 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import serviceportaria from "../../../services/serviceportaria";
-import { unMask } from "../../../utils/masks";
+import serviceportaria from "../../../../services/serviceportaria";
+import { unMask } from "../../../../utils/masks";
 import { Formik } from "formik";
 import moment from "moment";
 import schema from "./schema";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Loading from "../../../components/Loading";
-import { AuthContext } from "../../../contexts/auth";
+import Loading from "../../../../components/Loading";
+import { AuthContext } from "../../../../contexts/auth";
 
 interface RegisterProps {
   dataEntrada: any;
@@ -116,19 +116,24 @@ const RegistorsVisitors = () => {
 
   return (
     <>
-      <Loading visible={loading} spinercolor="#29ABE2" />
-      <View className="pb-[40rem]">
-        <View className="flex-row items-center justify-start mx-0 py-4 border-b border-gray-300">
-          <MaterialCommunityIcons name="alert" size={20} color="red" />
-          <Text className="ml-1 text-base text-red-400 font-medium">
-            Preencha corretamente os campos abaixo{" "}
-          </Text>
-        </View>
+      <Loading visible={loading} spinercolor="#154295" />
+      <View className="">
         <KeyboardAvoidingView behavior={undefined} keyboardVerticalOffset={0}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
+            <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 my-4">
+              <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
+                Cadastrar visitante
+              </Text>
+            </View>
+            <View className="flex-row items-center justify-start mx-0 py-4 border-b border-gray-300">
+              <MaterialCommunityIcons name="alert" size={20} color="red" />
+              <Text className="ml-1 text-base text-red-400 font-medium">
+                Preencha corretamente os campos abaixo{" "}
+              </Text>
+            </View>
             <View className="pb-10">
               <Formik
                 enableReinitialize
@@ -256,6 +261,7 @@ const RegistorsVisitors = () => {
                         onChangeText={handleChange("placa")}
                         onBlur={() => setFieldTouched("placa")}
                         value={values.placa}
+                        autoCapitalize="characters"
                       />
                       {touched && errors && (
                         <Text className="self-end pr-6 pt-1 text-base text-red-600">
@@ -326,17 +332,15 @@ const RegistorsVisitors = () => {
                     </View>
                     <View className="mt-6">
                       <Pressable
-                        className={`flex items-center justify-center ${
-                          !isValid
-                            ? "bg-solar-gray-dark"
-                            : "bg-solar-orange-middle"
-                        } mt-10 py-4 rounded-full`}
+                        className={`flex items-center justify-center ${!isValid
+                          ? "bg-solar-gray-dark"
+                          : "bg-solar-blue-dark"
+                          } mt-10 py-4 rounded-full`}
                         onPress={handleSubmit as any}
                       >
                         <Text
-                          className={`text-lg font-medium ${
-                            !isValid ? "text-gray-300" : "text-solar-blue-dark"
-                          }`}
+                          className={`text-xl font-medium ${!isValid ? "text-gray-300" : "text-gray-50"
+                            }`}
                         >
                           Próximo
                         </Text>

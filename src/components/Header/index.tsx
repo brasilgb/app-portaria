@@ -27,7 +27,7 @@ const Header = ({
   return (
     <View className={`${bgcolor} flex-col items-center py-6`}>
       <View className="flex-row items-center justify-between py-2 px-4 w-full">
-        {pathname === "/naturovos" || pathname === "/solar" ? (
+        {pathname === "/naturovos/statuscarga/carga" || pathname === "/naturovos/nregistervisitors" || pathname === "/solar" ? (
           <Text />
         ) : (
           <MaterialCommunityIcons

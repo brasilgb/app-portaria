@@ -1,18 +1,19 @@
-import Loading from "../../../components/Loading";
-import serviceportaria from "../../../services/serviceportaria";
-import { maskHour } from "../../../utils/masks";
+import { View, Text, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import serviceportaria from "../../../../services/serviceportaria";
+import { maskHour } from "../../../../utils/masks";
+import moment from "moment";
 import { cpf } from "cpf-cnpj-validator";
 import { useLocalSearchParams } from "expo-router";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { ScrollView, View, Text } from "react-native";
+import servicelogin from "../../../../services/servicelogin";
+import Loading from "../../../../components/Loading";
 
 interface VisitasProps {
-  userIn: number;
+  userOut: number;
   filial: number;
   fornecedor: string;
   transportadora: string;
-  cpf: number;
+  cpf: string;
   nome: string;
   placa: string;
   nota: number;
@@ -27,12 +28,10 @@ interface VisitasProps {
   observacao: string;
 }
 
-const InfoVisitanteEntrada = () => {
+const InfoVisitanteSaida = () => {
   const data = useLocalSearchParams();
-  const [visitasInfo, setVisitasInfo] = useState<VisitasProps>(
-    {} as VisitasProps
-  );
-  const [codeToNameIn, setCodeToNameIn] = useState();
+  const [visitasInfo, setVisitasInfo] = useState<any>([]);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -40,45 +39,34 @@ const InfoVisitanteEntrada = () => {
       setLoading(true);
       await serviceportaria
         .post(`(PORT_LISTA_VISITA_ID)`, {
-          ident: data?.ident,
+          ident: data.ident,
         })
         .then((response) => {
-          setTimeout(() => {
-            setLoading(false);
-          }, 500);
           setVisitasInfo(response.data.visita.data);
+        })
+        .catch((err) => {
+          console.log(err);
         });
+      setLoading(false);
     };
     getVisitasAbertas();
-  }, [data]);
-
-  useEffect(() => {
-    const getCodeToName = async () => {
-      await serviceportaria
-        .post(`(LOG_USU_VALIDATE_USER)`, {
-          alternative: visitasInfo.userIn,
-        })
-        .then((response) => {
-          setCodeToNameIn(response.data.user.userName);
-        });
-    };
-    getCodeToName();
-  }, [visitasInfo]);
+  }, []);
 
   return (
     <>
       <Loading visible={loading} spinercolor="#29ABE2" />
-      <View>
+      <View className="pb-[20rem]">
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
           <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4">
             <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
-              Informações de visitas
+              Informação do visitante
             </Text>
           </View>
-          <View className="bg-white border border-gray-300 rounded-lg">
+
+          <View className="bg-white border border-gray-300">
             <View
               className={`flex-row items-center justify-between border-b border-gray-300`}
             >
@@ -156,7 +144,17 @@ const InfoVisitanteEntrada = () => {
                 Data entrada
               </Text>
               <Text className="flex-1 border-l px-1 py-3 border-gray-300 text-base font-normal">
-                {moment(`${visitasInfo.dataEntrada}`).format("DD/MM/YYYY")}
+                {moment(visitasInfo.dataEntrada).format("DD/MM/YYYY")}
+              </Text>
+            </View>
+            <View
+              className={`flex-row items-center justify-between border-b border-gray-300`}
+            >
+              <Text className="flex-1 px-1 py-3 text-base font-normal">
+                Data saída
+              </Text>
+              <Text className="flex-1 border-l px-1 py-3 border-gray-300 text-base font-normal">
+                {moment(visitasInfo.dataSaida).format("DD/MM/YYYY")}
               </Text>
             </View>
             <View
@@ -167,6 +165,16 @@ const InfoVisitanteEntrada = () => {
               </Text>
               <Text className="flex-1 border-l px-1 py-3 border-gray-300 text-base font-normal">
                 {maskHour(("0000" + visitasInfo.horaEntrada).slice(-4))}
+              </Text>
+            </View>
+            <View
+              className={`flex-row items-center justify-between border-b border-gray-300`}
+            >
+              <Text className="flex-1 px-1 py-3 text-base font-normal">
+                Hora saída
+              </Text>
+              <Text className="flex-1 border-l px-1 py-3 border-gray-300 text-base font-normal">
+                {maskHour(("0000" + visitasInfo.horaSaida).slice(-4))}
               </Text>
             </View>
             <View
@@ -200,7 +208,7 @@ const InfoVisitanteEntrada = () => {
               </Text>
             </View>
             <View
-              className={`flex-row items-center justify-between border-gray-300`}
+              className={`flex-row items-center justify-between border-b border-gray-300`}
             >
               <Text className="flex-1 px-1 py-3 text-base font-normal">
                 Observações
@@ -216,4 +224,4 @@ const InfoVisitanteEntrada = () => {
   );
 };
 
-export default InfoVisitanteEntrada;
+export default InfoVisitanteSaida;

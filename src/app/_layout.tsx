@@ -1,22 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Slot, useRouter } from "expo-router";
+import { Slot, Stack, useRouter } from "expo-router";
 import AuthProvider, { AuthContext } from "../contexts/auth";
+import 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BackHandler } from "react-native";
+import { BackHandler, StatusBar } from "react-native";
 import "./../global.css";
 
 const Root = () => {
   const router = useRouter();
   const [onSetUser, setOnSetUser] = useState<any>(null);
-
-  useEffect(() => {
-    const usrLogged = async () => {
-      const usuario: any = await AsyncStorage.getItem("Auth_user");
-      const resuser = JSON.parse(usuario);
-      setOnSetUser(resuser);
-    };
-    usrLogged();
-  }, []);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -27,17 +19,29 @@ const Root = () => {
   }, []);
 
   useEffect(() => {
+    const usrLogged = async () => {
+      const usuario: any = await AsyncStorage.getItem("Auth_user");
+      const resuser = JSON.parse(usuario);
+      setOnSetUser(resuser);
+    };
+    usrLogged();
+  }, [AsyncStorage]);
+
+
+  useEffect(() => {
     const verifyUser = async () => {
+
+      if (!!onSetUser === false) {
+        router.replace("signin");
+      }
       if (!!onSetUser) {
         if (onSetUser?.filial === "1") {
           router.replace("solar");
         }
 
         if (onSetUser?.filial === "26") {
-          router.replace("naturovos");
+          router.replace("naturovos/statuscarga/carga");
         }
-      } else if (!!onSetUser === false) {
-        router.replace("auth");
       }
     };
     verifyUser();
@@ -45,7 +49,18 @@ const Root = () => {
 
   return (
     <AuthProvider>
-      <Slot />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          presentation: 'card',
+          animationTypeForReplace: 'push',
+          animation: 'slide_from_left',
+          // animationDuration: 5000
+        }}
+      >
+      </Stack>
     </AuthProvider>
   );
 };

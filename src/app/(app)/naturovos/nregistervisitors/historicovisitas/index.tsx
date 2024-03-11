@@ -3,11 +3,11 @@ import { View, Text, ScrollView, Alert } from "react-native";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
-import serviceportaria from "../../../services/serviceportaria";
-import { maskHour } from "../../../utils/masks";
+import serviceportaria from "../../../../../services/serviceportaria";
+import { maskHour } from "../../../../../utils/masks";
 import { router } from "expo-router";
-import Loading from "../../../components/Loading";
-import { AuthContext } from "../../../contexts/auth";
+import Loading from "../../../../../components/Loading";
+import { AuthContext } from "../../../../../contexts/auth";
 
 const HistoricoVisitas = () => {
   const { user } = useContext(AuthContext);
@@ -87,7 +87,7 @@ const HistoricoVisitas = () => {
   return (
     <>
       <Loading visible={loading} spinercolor="#29ABE2" />
-      <View className="pb-[20rem]">
+      <View className="border-t-4 border-green-500">
         {showDateTop && (
           <DatePicker
             value={dateTop}

@@ -1,13 +1,13 @@
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import React, { useContext, useState } from "react";
-import { ButtonAction } from "../../components/Buttons";
+import { ButtonAction } from "../../../components/Buttons";
 import { Formik } from "formik";
 import schema from "./schema";
 import { cpf } from "cpf-cnpj-validator";
-import serviceportaria from "../../services/serviceportaria";
+import serviceportaria from "../../../services/serviceportaria";
 import { router } from "expo-router";
-import Loading from "../../components/Loading";
-import { AuthContext } from "../../contexts/auth";
+import Loading from "../../../components/Loading";
+import { AuthContext } from "../../../contexts/auth";
 
 interface HomeProps {
   cpf: string;
@@ -45,26 +45,12 @@ const Solar = () => {
 
   return (
     <>
-      <Loading visible={loading} spinercolor="#29ABE2" />
-      <View className="flex-row items-center justify-between">
-        <ButtonAction
-          bgcolor="bg-green-500"
-          textcolor="text-gray-50"
-          title="Histórico"
-          icon="history"
-          href="solar/historicovisitas"
-          btnwidth="w-60"
-        />
-        <ButtonAction
-          bgcolor="bg-red-500"
-          textcolor="text-gray-50"
-          title="Saídas pendentes"
-          icon="exit-run"
-          href="solar/saidaspendentes"
-          btnwidth="w-60"
-        />
+      <Loading visible={loading} spinercolor="#154295" />
+      <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 my-4">
+        <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
+          Cadastrar visitante
+        </Text>
       </View>
-
       <View className="">
         <Formik
           enableReinitialize
@@ -87,15 +73,14 @@ const Solar = () => {
           }) => (
             <View className="my-4">
               {/* <FormObserver /> */}
-              <View className="mt-6">
+              <View className="">
                 <Text className="label-form">CPF do Motorista</Text>
 
                 <TextInput
-                  className={`input-form ${
-                    touched && errors.cpf
+                  className={`input-form ${touched && errors.cpf
                       ? "text-red-600 border-red-600"
                       : "text-solar-blue-dark border-gray-400"
-                  }`}
+                    }`}
                   onChangeText={handleChange("cpf")}
                   onBlur={() => setFieldTouched("cpf")}
                   value={cpf.format(values.cpf)}
@@ -109,11 +94,10 @@ const Solar = () => {
               <View className="mt-6">
                 <Text className="label-form">Número do pedido</Text>
                 <TextInput
-                  className={`input-form ${
-                    touched && errors.pedido
+                  className={`input-form ${touched && errors.pedido
                       ? "text-red-600 border-red-600"
                       : "text-solar-blue-dark border-gray-400"
-                  }`}
+                    }`}
                   onChangeText={handleChange("pedido")}
                   onBlur={() => setFieldTouched("pedido")}
                   value={values.pedido}
@@ -125,15 +109,13 @@ const Solar = () => {
                 )}
               </View>
               <Pressable
-                className={`flex items-center justify-center ${
-                  !isValid ? "bg-solar-gray-dark" : "bg-solar-orange-middle"
-                } mt-10 py-4 rounded-full`}
+                className={`flex items-center justify-center ${!isValid ? "bg-solar-gray-dark" : "bg-solar-blue-dark"
+                  } mt-10 py-4 rounded-full`}
                 onPress={handleSubmit as any}
               >
                 <Text
-                  className={`text-lg font-medium ${
-                    !isValid ? "text-gray-300" : "text-solar-blue-dark"
-                  }`}
+                  className={`text-xl font-medium ${!isValid ? "text-gray-300" : "text-gray-50"
+                    }`}
                 >
                   Continuar
                 </Text>

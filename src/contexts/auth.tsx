@@ -20,7 +20,9 @@ interface SignInProps {
 
 export default function AuthProvider({ children }: AuthProps) {
   const [user, setUser] = useState<any>();
+  const [userLogged, setUserLogged] = useState<any>(null);
   const [historyFilial, setHistoryFilial] = useState("");
+
   // Armazena usuário no storage
   useEffect(() => {
     async function loadStorage() {
@@ -28,6 +30,7 @@ export default function AuthProvider({ children }: AuthProps) {
       const storageFilial = await AsyncStorage.getItem("Auth_filial");
       if (storageUser) {
         setUser(JSON.parse(storageUser));
+        setUserLogged(JSON.parse(storageUser))
       }
       if (storageFilial) {
         setHistoryFilial(JSON.parse(storageFilial));
@@ -51,7 +54,8 @@ export default function AuthProvider({ children }: AuthProps) {
       if (!success) {
         setUser(undefined);
         Alert.alert("Erro de Acesso ", message);
-        return;
+
+        return false;
       }
       const portariaAccess = await validateAccessLevel(code, 2888, 10);
       let udata = {
@@ -70,8 +74,9 @@ export default function AuthProvider({ children }: AuthProps) {
       }
 
       if (filial === "26") {
-        router.push("naturovos");
+        router.push("naturovos/statuscarga/carga");
       }
+      return true;
     },
     []
   );
@@ -142,14 +147,14 @@ export default function AuthProvider({ children }: AuthProps) {
   async function disconnect() {
     await AsyncStorage.clear().then(() => {
       setUser(undefined);
-      router.push("auth");
+      router.push("signin");
     });
   }
 
   return (
     <AuthContext.Provider
       value={{
-        signed: !!user,
+        signed: !!userLogged,
         user,
         historyFilial,
         validateUser,

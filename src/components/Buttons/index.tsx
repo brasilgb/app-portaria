@@ -37,9 +37,9 @@ export const ButtonAction = ({
     >
       <Pressable>
         {!inverter && (
-          <MaterialCommunityIcons name={icon} color="#FAFAFA" size={24} />
+          <MaterialCommunityIcons name={icon} color="#FAFAFA" size={title ? 24 : 32} />
         )}
-        <Text className={`${textcolor} mx-1 text-xl font-semibold`}>
+        <Text className={`${textcolor} ${title ? 'mx-1' : ''}  text-xl font-semibold`}>
           {title}
         </Text>
         {inverter && (

@@ -1,13 +1,13 @@
 import { View, Text, Alert, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import serviceportaria from "../../../services/serviceportaria";
+import serviceportaria from "../../../../services/serviceportaria";
 import moment from "moment";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { maskHour } from "../../../utils/masks";
+import { maskHour } from "../../../../utils/masks";
 import { router } from "expo-router";
-import { AuthContext } from "../../../contexts/auth";
-import Loading from "../../../components/Loading";
+import { AuthContext } from "../../../../contexts/auth";
+import Loading from "../../../../components/Loading";
 
 const SaidasPendentes = () => {
   const [visitasPendentes, setVisitasPendentes] = useState([]);
@@ -158,7 +158,7 @@ const SaidasPendentes = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4">
+          <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4 border-t-4 border-t-red-500">
             <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
               Saídas pendentes
             </Text>
@@ -199,7 +199,7 @@ const SaidasPendentes = () => {
                 <Ionicons
                   name="alert-circle"
                   size={30}
-                  color="#29ABE2"
+                  color="#17A2B8"
                   onPress={() =>
                     router.push({
                       pathname: "solar/infovisitanteentrada",

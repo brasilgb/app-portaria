@@ -4,10 +4,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TextInput,
-  TouchableOpacity,
   Dimensions,
   Pressable,
-  FlatList,
   Modal,
   Alert,
 } from "react-native";
@@ -15,27 +13,26 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Ionicons,
   MaterialCommunityIcons,
-  MaterialIcons,
+  MaterialIcons
 } from "@expo/vector-icons";
 import { Formik } from "formik";
 import schema from "./schema";
-import { router, useLocalSearchParams } from "expo-router";
-import serviceportaria from "../../services/serviceportaria";
+import serviceportaria from "../../../../../services/serviceportaria";
 import { FlashList } from "@shopify/flash-list";
-import { AuthContext } from "../../contexts/auth";
-import { ButtonAction } from "../../components/Buttons";
-import Loading from "../../components/Loading";
+import { AuthContext } from "../../../../../contexts/auth";
+import Loading from "../../../../../components/Loading";
+import { router } from "expo-router";
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 interface RegisterProps {
-  filial: string;
   codigo: string;
   nome: string;
   placa: string;
   motorista: string;
   produto: string;
   pager: string;
+  notas: string;
 }
 
 const Naturovos = () => {
@@ -46,31 +43,36 @@ const Naturovos = () => {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [masterData, setMasterData] = useState([]);
+  const [tipoEntradaCarga, setTipoEntradaCarga] = useState<number>(1);
 
   const onsubmit = async (values: RegisterProps, { resetForm }: any) => {
     setLoading(true);
-    await serviceportaria
-      .post(`(PORT_CHEGADA)`, {
-        filial: user?.filial,
-        user: user?.code,
-        transportadora: {
-          codigo: values.codigo,
-          nome: values.nome,
-        },
-        placa: values.placa,
-        motorista: values.motorista,
-        produto: values.produto,
-        pager: values.pager,
-      })
+    await serviceportaria.post(`(PORT_CHEGADA)`, {
+      caller: 0,
+      user: user?.code,
+      filial: user?.filial,
+      transportadora: {
+        codigo: values.codigo,
+        nome: values.nome,
+      },
+      placa: values.placa,
+      motorista: values.motorista,
+      produto: values.produto,
+      pager: values.pager,
+      notas: values.notas,
+      tipoEntrada: tipoEntradaCarga
+    })
       .then((response) => {
         const { success, message } = response.data.genericResponse;
         setLoading(false);
         if (!success) {
-          Alert.alert("Erro", message);
+          Alert.alert('Error', message);
           return;
         }
-        Alert.alert("Sucesso", "Carga cadastrada com sucesso");
-        setTransportadora([]);
+        router.push({
+          pathname: "naturovos/registered",
+          params: { motorista: values.motorista, register: 1 }, // valor 1 = carga
+        });
         resetForm({});
       })
       .catch((error) => {
@@ -116,7 +118,7 @@ const Naturovos = () => {
   const ItemView = ({ item }: any) => {
     return (
       <Text
-        className="text-base font-medium py-1"
+        className="text-lg font-medium py-1"
         onPress={() => getItem(item)}
       >
         {item.codigo}
@@ -150,7 +152,7 @@ const Naturovos = () => {
             <View className="flex-row items-center justify-between">
               <View className="flex-1">
                 <TextInput
-                  className="py-2 px-3 rounded-lg text-lg bg-white  border border-gray-200 placeholder:text-slate-400 shadow-md shadow-slate-500"
+                  className="py-2 px-3 rounded-lg text-xl bg-white  border border-gray-200 placeholder:text-slate-400 shadow-md shadow-slate-500"
                   onChangeText={(text) => searchFilter(text)}
                   value={search}
                 />
@@ -160,7 +162,10 @@ const Naturovos = () => {
                   name="close"
                   size={32}
                   color="#919090"
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => {
+                    setModalVisible(false)
+                    setTransportadora([])
+                  }}
                 />
               </View>
             </View>
@@ -177,46 +182,13 @@ const Naturovos = () => {
           </View>
         </View>
       </Modal>
-      <View className="pb-[12rem]">
+      <View>
         <KeyboardAvoidingView behavior={undefined} keyboardVerticalOffset={0}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4">
-              <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
-                Cargas aguardando
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-between gap-4">
-              <ButtonAction
-                bgcolor="bg-green-500"
-                textcolor="text-gray-50"
-                title="Informar Nota"
-                icon="file-document"
-                href="naturovos/statuscarga"
-                params="1"
-                btnwidth="w-60"
-              />
-              <ButtonAction
-                bgcolor="bg-orange-500"
-                textcolor="text-gray-50"
-                title="Entrada"
-                icon="arrow-right-bold-box"
-                href="naturovos/statuscarga"
-                params="2"
-                btnwidth="w-48"
-              />
-              <ButtonAction
-                bgcolor="bg-blue-500"
-                textcolor="text-gray-50"
-                title="Saída"
-                icon="arrow-left-bold-box"
-                href="naturovos/statuscarga"
-                params="3"
-                btnwidth="w-48"
-              />
-            </View>
+
             <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 my-4">
               <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
                 Cadastrar chegada de carga
@@ -231,20 +203,17 @@ const Naturovos = () => {
 
             <View className="pb-10">
               <Formik
-                enableReinitialize
+              
                 validationSchema={schema}
                 initialValues={{
-                  filtro: "",
                   user: "",
-                  filial: "",
-                  codigo: transportadora.codigo
-                    ? transportadora.codigo.toString()
-                    : "0",
-                  nome: transportadora.nome ? transportadora.nome : "",
+                  codigo: "",
+                  nome: "",
                   placa: "",
                   motorista: "",
                   produto: "",
                   pager: "",
+                  notas: "",
                 }}
                 onSubmit={onsubmit}
               >
@@ -267,10 +236,10 @@ const Naturovos = () => {
                           Buscar transportadora
                         </Text>
                         <TextInput
-                          className={`input-form `}
+                          className={`input-form relative`}
                           onChangeText={handleChange("codigo")}
                           onBlur={() => setFieldTouched("codigo")}
-                          value={values.codigo}
+                          value={values.codigo = `${transportadora.codigo > 0 ? transportadora.codigo : '0'}`}
                           underlineColorAndroid="transparent"
                         />
                         {touched && errors && (
@@ -279,6 +248,7 @@ const Naturovos = () => {
                           </Text>
                         )}
                       </View>
+                      <MaterialIcons onPress={() => setTransportadora([])} name="cleaning-services" className="absolute right-4 top-11" size={25} color="#F18800" />
                     </Pressable>
                     <View>
                       <Text className="label-form">Transportadora</Text>
@@ -286,7 +256,7 @@ const Naturovos = () => {
                         className={`input-form `}
                         onChangeText={handleChange("nome")}
                         onBlur={() => setFieldTouched("nome")}
-                        value={values.nome}
+                        value={values.nome || transportadora.codigo > 0 ? values.nome = transportadora.nome : ""}
                       />
                       {touched && errors && (
                         <Text className="self-end pr-6 pt-1 text-base text-red-600">
@@ -351,18 +321,46 @@ const Naturovos = () => {
                       />
                     </View>
                     <View className="mt-6">
+                      <Text className="label-form">Nota fiscal</Text>
+                      <TextInput
+                        className={`input-form `}
+                        onChangeText={handleChange("notas")}
+                        onBlur={() => setFieldTouched("notas")}
+                        value={values.notas}
+                        autoCapitalize="characters"
+                      />
+                    </View>
+                    <View className="mt-8 flex-row items-center justify-center px-2">
+                      <View className="flex-1">
+                        <Pressable className="flex-row items-center justify-start" onPress={() => setTipoEntradaCarga(1)}>
+                          <Ionicons name={tipoEntradaCarga === 1 ? "radio-button-on" : "radio-button-off"} size={22} color="#F18800" />
+                          <Text className={`ml-1 label-form`}>Entrada</Text>
+                        </Pressable>
+                      </View>
+                      <View className="flex-1">
+                        <Pressable className="flex-row items-center justify-start" onPress={() => setTipoEntradaCarga(2)}>
+                          <Ionicons name={tipoEntradaCarga === 2 ? "radio-button-on" : "radio-button-off"} size={22} color="#F18800" />
+                          <Text className={`ml-1 label-form`}>Coleta</Text>
+                        </Pressable>
+                      </View>
+                      <View className="flex-1">
+                        <Pressable className="flex-row items-center justify-start" onPress={() => setTipoEntradaCarga(3)}>
+                          <Ionicons name={tipoEntradaCarga === 3 ? "radio-button-on" : "radio-button-off"} size={22} color="#F18800" />
+                          <Text className={`ml-1 label-form`}>Ovos integrados</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                    <View className="mt-6">
                       <Pressable
-                        className={`flex items-center justify-center ${
-                          !isValid
-                            ? "bg-solar-gray-dark"
-                            : "bg-solar-orange-middle"
-                        } mt-10 py-4 rounded-full`}
+                        className={`flex items-center justify-center ${!isValid
+                          ? "bg-solar-gray-dark"
+                          : "bg-solar-yellow-dark"
+                          } mt-10 py-4 rounded-full`}
                         onPress={handleSubmit as any}
                       >
                         <Text
-                          className={`text-lg font-medium ${
-                            !isValid ? "text-gray-300" : "text-solar-blue-dark"
-                          }`}
+                          className={`text-xl font-medium ${!isValid ? "text-gray-300" : "text-gray-700"
+                            }`}
                         >
                           Registrar chegada
                         </Text>
