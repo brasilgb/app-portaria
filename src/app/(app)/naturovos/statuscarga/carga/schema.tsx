@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 import { ptForm } from "yup-locale-pt";
-import { cpf } from 'cpf-cnpj-validator';
 Yup.setLocale(ptForm);
 
 export default Yup.object().shape({
@@ -10,6 +9,5 @@ export default Yup.object().shape({
     motorista: Yup.string().required("O campo motorista é obrigatório!"),
     produto: Yup.string().required("O campo produto é obrigatório!"),
     pager: Yup.string(),
-    notas: Yup.string(),
-    tipoEntrada: Yup.string(),
+    notas: Yup.string()
 });

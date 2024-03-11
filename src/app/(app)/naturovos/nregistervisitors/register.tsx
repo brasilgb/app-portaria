@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, KeyboardAvoidingView, TextInput, Switch } from 'react-native'
+import { View, Text, Pressable, ScrollView, KeyboardAvoidingView, TextInput, Switch, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Formik } from "formik"
@@ -13,12 +13,11 @@ import serviceportaria from "@/services/serviceportaria"
 
 interface RegisterProps {
   dataEntrada: any;
+  destino: string;
   fornecedor: string;
-  motorista: string;
+  nome: string;
   placa: string;
   horaEntrada: string;
-  horaSaida: string;
-  destino: string;
   sintomas: string;
   granjas: string;
   procedencia: string;
@@ -34,6 +33,7 @@ const NRegisterVisitors = () => {
   const [hour, setHour] = useState(new Date());
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
+console.log(user);
 
   const [isEnabled, setIsEnabled] = useState(false);
   const [isEnabled2, setIsEnabled2] = useState(false);
@@ -79,36 +79,39 @@ const NRegisterVisitors = () => {
   };
 
   const onsubmit = async (values: RegisterProps, { resetForm }: any) => {
-    setLoading(true);
-    // console.log(values);
-    // return;
+    // setLoading(true);
+    console.log(values);
+    return;
     let dataatual = values.dataEntrada.split("/");
     let formdate = dataatual[2] + dataatual[1] + dataatual[0];
     await serviceportaria
       .post(`(PORT_GRAVA_VISITA)`, {
-        filial: user?.filial,
         user: user?.code,
+        filial: user?.filial,
         cpf: visitors?.cpf,
-        nome: values.motorista,
+        nome: values.nome,
         data: formdate,
         fornecedor: values.fornecedor,
         placa: values.placa,
         pedido: visitors?.pedido,
         horaEntrada: unMask(values.horaEntrada),
         destino: values.destino,
-        sintomas: isEnabled ? 'Sim' : 'Não',
-        granjas: values.granjas,
+        sintomas: isEnabled ? '0' : '1',
+        granjas: isEnabled2 ? '0' : '1',
         procedencia: values.procedencia,
         observacao: values.observacao,
       })
       .then((response) => {
-        if (response.data.visita.success) {
-          router.push({
-            pathname: "naturovos/registered",
-            params: { ndata: {motorista: values.motorista, register: 2} }, // Valor 2 = visitantes
-          });
-          setLoading(false);
-        }
+        const { success, message } = response.data.visita;
+        setLoading(false);
+          if (!success) {
+            Alert.alert('Error', message);
+            return;
+          }
+        router.push({
+          pathname: "naturovos/registered",
+          params: { ndata: {motorista: values.nome, register: 2} }, // Valor 2 = visitantes
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -140,14 +143,13 @@ const NRegisterVisitors = () => {
             <Formik
               validationSchema={schema}
               initialValues={{
-                motorista: visitors.visitante,
+                nome: visitors.visitante,
                 dataEntrada: moment().format("DD/MM/YYYY"),
                 fornecedor: fornecedor,
                 placa: "",
+                pedido: "",
                 horaEntrada: moment(hour).format("HH:mm"),
-                horaSaida: "",
-                destino: "",
-                produto: "",
+                destino: "", //motivo
                 sintomas: isEnabled ? 'Sim' : 'Não',
                 granjas: isEnabled2 ? 'Sim' : 'Não',
                 procedencia: "",
@@ -236,13 +238,13 @@ const NRegisterVisitors = () => {
                     <Text className="label-form">Visitante</Text>
                     <TextInput
                       className={`input-form `}
-                      onChangeText={handleChange("motorista")}
-                      onBlur={() => setFieldTouched("motorista")}
-                      value={values.motorista}
+                      onChangeText={handleChange("nome")}
+                      onBlur={() => setFieldTouched("nome")}
+                      value={values.nome}
                     />
                     {touched && errors && (
                       <Text className="self-end pr-6 pt-1 text-base text-red-600">
-                        {errors.motorista}
+                        {errors.nome}
                       </Text>
                     )}
                   </View>

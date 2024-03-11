@@ -143,10 +143,7 @@ const StatusCarga = () => {
                                 <View className="px-4 w-full">
                                     <Formik
                                         enableReinitialize
-                                        validationSchema={
-                                            Yup.object().shape({
-                                                balanca: Yup.string().required("O peso da carga é obrigatório, se não foi inserido faça manulamente!")
-                                            })}
+                                        validationSchema={""}
                                         initialValues={{
                                             codigo: statusCarga.codigo,
                                             balanca: pesoCarga,
@@ -183,11 +180,6 @@ const StatusCarga = () => {
                                                             }
                                                         </View>
                                                     </View>
-                                                    {touched && errors && (
-                                                        <Text className="self-start pl-6 pt-1 text-base text-red-600">
-                                                            {errors.balanca}
-                                                        </Text>
-                                                    )}
                                                 </View>
                                                 <View className="mt-6">
                                                     <Pressable

@@ -45,6 +45,7 @@ const Naturovos = () => {
   const [masterData, setMasterData] = useState([]);
   const [tipoEntradaCarga, setTipoEntradaCarga] = useState<number>(1);
 
+
   const onsubmit = async (values: RegisterProps, { resetForm }: any) => {
     setLoading(true);
     await serviceportaria.post(`(PORT_CHEGADA)`, {
@@ -134,6 +135,10 @@ const Naturovos = () => {
     setModalVisible(false);
   };
 
+  // useEffect(() => {
+  //   console.log('JSON.stringify(Formik)');
+  // }, []);
+
   return (
     <>
       <Loading visible={loading} spinercolor="#29ABE2" />
@@ -203,25 +208,21 @@ const Naturovos = () => {
 
             <View className="pb-10">
               <Formik
-              
                 validationSchema={schema}
                 initialValues={{
-                  user: "",
-                  codigo: "",
-                  nome: "",
+                  codigo: `${transportadora.codigo > "0" ? transportadora.codigo : "0"}`,
+                  nome: `${transportadora.nome?transportadora.nome:""}`,
                   placa: "",
                   motorista: "",
                   produto: "",
                   pager: "",
                   notas: "",
                 }}
+                enableReinitialize
                 onSubmit={onsubmit}
               >
                 {({
                   handleChange,
-                  handleBlur,
-                  setValues,
-                  setFieldValue,
                   handleSubmit,
                   setFieldTouched,
                   values,
@@ -239,7 +240,7 @@ const Naturovos = () => {
                           className={`input-form relative`}
                           onChangeText={handleChange("codigo")}
                           onBlur={() => setFieldTouched("codigo")}
-                          value={values.codigo = `${transportadora.codigo > 0 ? transportadora.codigo : '0'}`}
+                          value={values.codigo || `${transportadora.codigo}`}
                           underlineColorAndroid="transparent"
                         />
                         {touched && errors && (
@@ -255,8 +256,8 @@ const Naturovos = () => {
                       <TextInput
                         className={`input-form `}
                         onChangeText={handleChange("nome")}
-                        onBlur={() => setFieldTouched("nome")}
-                        value={values.nome || transportadora.codigo > 0 ? values.nome = transportadora.nome : ""}
+                        onBlur={() => { setFieldTouched("nome") }}
+                        value={values.nome || transportadora.nome}
                       />
                       {touched && errors && (
                         <Text className="self-end pr-6 pt-1 text-base text-red-600">

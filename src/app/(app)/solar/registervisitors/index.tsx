@@ -136,7 +136,7 @@ const RegistorsVisitors = () => {
             </View>
             <View className="pb-10">
               <Formik
-                enableReinitialize
+                // enableReinitialize
                 validationSchema={schema}
                 initialValues={{
                   motorista: visitors.visitante,
