@@ -12,7 +12,7 @@ import { unMask } from "@/utils/masks"
 import serviceportaria from "@/services/serviceportaria"
 
 interface RegisterProps {
-  dataEntrada: any;
+  dataEntrada: string;
   destino: string;
   fornecedor: string;
   nome: string;
@@ -33,7 +33,6 @@ const NRegisterVisitors = () => {
   const [hour, setHour] = useState(new Date());
   const [show, setShow] = useState(false);
   const [showTime, setShowTime] = useState(false);
-console.log(user);
 
   const [isEnabled, setIsEnabled] = useState(false);
   const [isEnabled2, setIsEnabled2] = useState(false);
@@ -79,9 +78,7 @@ console.log(user);
   };
 
   const onsubmit = async (values: RegisterProps, { resetForm }: any) => {
-    // setLoading(true);
-    console.log(values);
-    return;
+    setLoading(true);
     let dataatual = values.dataEntrada.split("/");
     let formdate = dataatual[2] + dataatual[1] + dataatual[0];
     await serviceportaria
@@ -93,25 +90,25 @@ console.log(user);
         data: formdate,
         fornecedor: values.fornecedor,
         placa: values.placa,
-        pedido: visitors?.pedido,
         horaEntrada: unMask(values.horaEntrada),
         destino: values.destino,
-        sintomas: isEnabled ? '0' : '1',
-        granjas: isEnabled2 ? '0' : '1',
-        procedencia: values.procedencia,
         observacao: values.observacao,
+        sintomas: isEnabled ? '1' : '0',
+        granjas: isEnabled2 ? '1' : '0',
+        procedencia: values.procedencia,
       })
       .then((response) => {
         const { success, message } = response.data.visita;
         setLoading(false);
-          if (!success) {
-            Alert.alert('Error', message);
-            return;
-          }
+        if (!success) {
+          Alert.alert('Error', message);
+          return;
+        }
         router.push({
           pathname: "naturovos/registered",
-          params: { ndata: {motorista: values.nome, register: 2} }, // Valor 2 = visitantes
+          params: { motorista: values.nome, register: 2 }, // valor 2 = visitantes
         });
+        resetForm({});
       })
       .catch((error) => {
         console.log(error);
@@ -143,15 +140,14 @@ console.log(user);
             <Formik
               validationSchema={schema}
               initialValues={{
-                nome: visitors.visitante,
+                nome: `${visitors.visitante}`,
                 dataEntrada: moment().format("DD/MM/YYYY"),
                 fornecedor: fornecedor,
                 placa: "",
-                pedido: "",
                 horaEntrada: moment(hour).format("HH:mm"),
                 destino: "", //motivo
-                sintomas: isEnabled ? 'Sim' : 'Não',
-                granjas: isEnabled2 ? 'Sim' : 'Não',
+                sintomas: "",
+                granjas: "",
                 procedencia: "",
                 observacao: "",
               }}
@@ -195,10 +191,7 @@ console.log(user);
                         className={`input-form `}
                         onChangeText={handleChange("dataEntrada")}
                         onBlur={() => setFieldTouched("dataEntrada")}
-                        value={
-                          (values.dataEntrada =
-                            moment(date).format("DD/MM/YYYY"))
-                        }
+                        value={values.dataEntrada }
                         editable={false}
                       />
                     </Pressable>
@@ -209,11 +202,9 @@ console.log(user);
                       <TextInput
                         pointerEvents="none"
                         className={`input-form `}
-                        onChangeText={handleChange("dataEntrada")}
-                        onBlur={() => setFieldTouched("dataEntrada")}
-                        value={
-                          (values.dataEntrada = moment(hour).format("HH:mm"))
-                        }
+                        onChangeText={handleChange("horaEntrada")}
+                        onBlur={() => setFieldTouched("horaEntrada")}
+                        value={values.horaEntrada}
                         editable={false}
                       />
                     </Pressable>
@@ -248,7 +239,7 @@ console.log(user);
                       </Text>
                     )}
                   </View>
-                  <View className="mt-6">
+                  <View className="">
                     <Text className="label-form">Placa do veículo</Text>
                     <TextInput
                       className={`input-form `}
@@ -257,11 +248,6 @@ console.log(user);
                       value={values.placa}
                       autoCapitalize="characters"
                     />
-                    {touched && errors && (
-                      <Text className="self-end pr-6 pt-1 text-base text-red-600">
-                        {errors.placa}
-                      </Text>
-                    )}
                   </View>
                   <View className="mt-6">
                     <Text className="label-form">Motivo da visita</Text>

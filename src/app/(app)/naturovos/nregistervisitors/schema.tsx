@@ -7,6 +7,6 @@ export default Yup.object().shape({
     horaEntrada: Yup.string().min(4).required("Digite o horário de entrada"),
     fornecedor: Yup.string().required("Digite o fornecedor/prestador serviço"),
     nome: Yup.string().required("Digite o motorista"),
-    placa: Yup.string().max(7).required("Digite o número da placa"),
+    placa: Yup.string(),
     destino: Yup.string().required("Digite o motivo da visita"),
 });

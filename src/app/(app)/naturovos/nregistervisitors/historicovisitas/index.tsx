@@ -27,15 +27,9 @@ const HistoricoVisitas = () => {
           filial: user?.filial,
         })
         .then((response) => {
-          if (response.data.visita.success) {
-            setTimeout(() => {
-              setLoading(false);
-              setVisitasPendentes(response.data.visita.data);
-            }, 500);
-          } else {
-            setLoading(false);
-            return;
-          }
+          setLoading(false);
+          const { success, data } = response.data.visita;
+          setVisitasPendentes(data);
         });
     };
     getVisitasAbertas();
@@ -52,7 +46,6 @@ const HistoricoVisitas = () => {
         hsaida: 0,
       })
       .then(async (response) => {
-        if (response.data.visita.success) {
           Alert.alert("Atenção", "Horário de saída revertido.", [
             {
               text: "ok",
@@ -71,7 +64,6 @@ const HistoricoVisitas = () => {
               },
             },
           ]);
-        }
       })
       .catch((error) => {
         console.log(error);
@@ -134,9 +126,8 @@ const HistoricoVisitas = () => {
             {visitasPendentes?.map((mt: any, index: any) => (
               <View
                 key={mt.cpf + index}
-                className={`${
-                  index % 2 ? "bg-blue-50" : "bg-gray-50"
-                } flex-row items-center justify-between border-b border-x border-gray-300`}
+                className={`${index % 2 ? "bg-blue-50" : "bg-gray-50"
+                  } flex-row items-center justify-between border-b border-x border-gray-300`}
               >
                 <Ionicons
                   name="alert-circle"
@@ -144,7 +135,7 @@ const HistoricoVisitas = () => {
                   color="#29ABE2"
                   onPress={() =>
                     router.push({
-                      pathname: "solar/infovisitantesaida",
+                      pathname: "naturovos/nregistervisitors/infovisitantesaida",
                       params: { ident: mt.ident, nome: mt.nome },
                     })
                   }

@@ -81,6 +81,28 @@ export default function AuthProvider({ children }: AuthProps) {
     []
   );
 
+  const alterPassword = useCallback(async (values: any, user: any ) => {
+    await servicelogin.post('(LOG_USU_CHANGE_PASSWORD)', {
+      code: user?.code,
+      oldPassword: values.password,
+      newPassword: values.password2
+    })
+      .then((response) => {
+        const { success, message } = response.data.change;
+        if (!success) {
+          Alert.alert('Error', message);
+          return;
+        }
+        router.push({
+          pathname: "(auth)/alterpassword/altered",
+          params: { user },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, []);
+
   const validateUser = useCallback(async ({ alternative }: any) => {
     const response = await servicelogin.post("(LOG_USU_VALIDATE_USER)", {
       alternative,
@@ -147,7 +169,7 @@ export default function AuthProvider({ children }: AuthProps) {
   async function disconnect() {
     await AsyncStorage.clear().then(() => {
       setUser(undefined);
-      router.push("signin");
+      router.push("(auth)/signin");
     });
   }
 
@@ -161,6 +183,7 @@ export default function AuthProvider({ children }: AuthProps) {
         signIn,
         disconnect,
         signOut,
+        alterPassword
       }}
     >
       {children}

@@ -1,13 +1,13 @@
 import { View, Text, Alert, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import serviceportaria from "../../../../services/serviceportaria";
+import serviceportaria from "../../../../../services/serviceportaria";
 import moment from "moment";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { maskHour } from "../../../../utils/masks";
+import { maskHour } from "../../../../../utils/masks";
 import { router } from "expo-router";
-import { AuthContext } from "../../../../contexts/auth";
-import Loading from "../../../../components/Loading";
+import { AuthContext } from "../../../../../contexts/auth";
+import Loading from "../../../../../components/Loading";
 
 const SaidasPendentes = () => {
   const [visitasPendentes, setVisitasPendentes] = useState([]);
@@ -32,15 +32,9 @@ const SaidasPendentes = () => {
           filial: user?.filial,
         })
         .then((response) => {
-          if (response.data.visita.success) {
-            setTimeout(() => {
-              setLoading(false);
-              setVisitasPendentes(response.data.visita.data);
-            }, 500);
-          } else {
-            setLoading(false);
-            return;
-          }
+          const { success, data } = response.data.visita;
+          setVisitasPendentes(data);
+          setLoading(false);
         });
     };
     getVisitasAbertas();
@@ -55,7 +49,7 @@ const SaidasPendentes = () => {
           await serviceportaria
             .post(`(PORT_ALTERA_VISITA)`, {
               status: 2,
-              user: 7023, //user.code,
+              user: user?.code, //user.code,
               ident: vid,
               dsaida: vDate,
               hsaida: vHour,

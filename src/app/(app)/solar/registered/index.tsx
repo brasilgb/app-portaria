@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const Registered = () => {
     const visitors: any = useLocalSearchParams();
@@ -24,6 +25,7 @@ const Registered = () => {
                     <Text className="text-lg uppercase font-medium text-solar-gray-light">Continuar</Text>
                 </Pressable>
             </View>
+            <StatusBar backgroundColor="#F1F1F1" style="dark" />
         </View>
     )
 }

@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Slot, Stack, usePathname } from "expo-router"
 import { StatusBar } from "expo-status-bar";
-import Header from "../../../components/Header";
+import Header from "../../../../components/Header";
 import { ButtonAction } from "@/components/Buttons";
 
 const SolarLayout = () => {

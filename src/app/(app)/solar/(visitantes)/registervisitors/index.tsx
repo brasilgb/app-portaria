@@ -9,14 +9,14 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import serviceportaria from "../../../../services/serviceportaria";
-import { unMask } from "../../../../utils/masks";
+import serviceportaria from "../../../../../services/serviceportaria";
+import { unMask } from "../../../../../utils/masks";
 import { Formik } from "formik";
 import moment from "moment";
 import schema from "./schema";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Loading from "../../../../components/Loading";
-import { AuthContext } from "../../../../contexts/auth";
+import Loading from "../../../../../components/Loading";
+import { AuthContext } from "../../../../../contexts/auth";
 
 interface RegisterProps {
   dataEntrada: any;
@@ -139,7 +139,7 @@ const RegistorsVisitors = () => {
                 // enableReinitialize
                 validationSchema={schema}
                 initialValues={{
-                  motorista: visitors.visitante,
+                  motorista: `${visitors.visitante}`,
                   dataEntrada: moment().format("DD/MM/YYYY"),
                   fornecedor: fornecedor,
                   transportadora: visitors.transportadora,
@@ -192,10 +192,7 @@ const RegistorsVisitors = () => {
                           className={`input-form `}
                           onChangeText={handleChange("dataEntrada")}
                           onBlur={() => setFieldTouched("dataEntrada")}
-                          value={
-                            (values.dataEntrada =
-                              moment(date).format("DD/MM/YYYY"))
-                          }
+                          value={values.dataEntrada}
                           editable={false}
                         />
                       </Pressable>
@@ -206,11 +203,9 @@ const RegistorsVisitors = () => {
                         <TextInput
                           pointerEvents="none"
                           className={`input-form `}
-                          onChangeText={handleChange("dataEntrada")}
-                          onBlur={() => setFieldTouched("dataEntrada")}
-                          value={
-                            (values.dataEntrada = moment(hour).format("HH:mm"))
-                          }
+                          onChangeText={handleChange("horaEntrada")}
+                          onBlur={() => setFieldTouched("horaEntrada")}
+                          value={values.horaEntrada}
                           editable={false}
                         />
                       </Pressable>

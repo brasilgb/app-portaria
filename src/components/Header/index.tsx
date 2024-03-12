@@ -21,14 +21,22 @@ const Header = ({
   bgcolor,
   color,
 }: HeaderProps) => {
-  const { signOut } = useContext(AuthContext);
+  const { signOut, user } = useContext(AuthContext);
   const pathname = usePathname();
 
   return (
     <View className={`${bgcolor} flex-col items-center py-6`}>
       <View className="flex-row items-center justify-between py-2 px-4 w-full">
         {pathname === "/naturovos/statuscarga/carga" || pathname === "/naturovos/nregistervisitors" || pathname === "/solar" ? (
-          <Text />
+          <View className="flex-row items-center justify-start">
+            <MaterialCommunityIcons
+              name="account-check"
+              size={32}
+              color={color}
+              onPress={() => router.push('(auth)/alterpassword')}
+            />
+            <Text className="text-lg pl-1" style={{color: color}}>{user?.nome}</Text>
+          </View>
         ) : (
           <MaterialCommunityIcons
             name="arrow-left"

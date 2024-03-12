@@ -32,7 +32,7 @@ const Root = () => {
     const verifyUser = async () => {
 
       if (!!onSetUser === false) {
-        router.replace("signin");
+        router.replace("(auth)/signin");
       }
       if (!!onSetUser) {
         if (onSetUser?.filial === "1") {

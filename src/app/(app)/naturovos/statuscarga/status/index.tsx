@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Dimensions, TextInput, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, Modal, TouchableOpacity, Dimensions, TextInput, Pressable, ActivityIndicator, Alert } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import serviceportaria from "../../../../../services/serviceportaria";
@@ -8,13 +8,16 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { ptForm } from "yup-locale-pt";
+import TextoModal from "@/components/TextoModal";
 Yup.setLocale(ptForm);
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
 interface RegisterStatusProps {
-    status: string;
-    balanca: string;
+    user: string;
+    codigo: string;
+    acao: string;
+    peso: string;
 }
 
 const StatusCarga = () => {
@@ -67,6 +70,7 @@ const StatusCarga = () => {
     };
 
     const ModalInfoCarga = () => {
+
         return (
             <Modal
                 statusBarTranslucent
@@ -80,13 +84,19 @@ const StatusCarga = () => {
                             <TouchableOpacity onPress={() => setModalInfo(false)}>
                                 <View className="flex-row items-center justify-between border-b border-b-gray-300">
                                     <Text className="py-2 px-4 text-xl text-solar-blue-dark font-Poppins_500Medium">
-                                        Detalhes da carga
+                                        Detalhes da carga de placa {infoCarga.placa}
                                     </Text>
                                     <MaterialIcons name="close" size={30} color="#FAA335" />
                                 </View>
                             </TouchableOpacity>
-                            <View className="flex-col items-start justify-start py-4 w-full">
-                                <Text> {infoCarga.codigo}</Text>
+                            <View>
+                                <TextoModal title="Código" value={infoCarga.codigo} />
+                                <TextoModal title="Placa" value={infoCarga.placa} />
+                                <TextoModal title="Transportadora" value={infoCarga.transportadora} />
+                                <TextoModal title="Motorista" value={infoCarga.motorista} />
+                                <TextoModal title="Produto" value={infoCarga.produto} />
+                                <TextoModal title="Data/Hora chegada" value={infoCarga.dhChegada} />
+                                <TextoModal title="Status" value={infoCarga.status} />
                             </View>
                         </View>
                     </View>
@@ -97,15 +107,45 @@ const StatusCarga = () => {
 
     const ModalStatusCarga = () => {
         const [pesoCarga, setPesoCarga] = useState<string>('');
-        const [loadingBalanca, setLoadingBalanca] = useState<boolean>(false);
+        const [loadingpeso, setLoadingpeso] = useState<boolean>(false);
 
         const onsubmit = async (values: RegisterStatusProps) => {
-            console.log(values);
+
             setModalStatus(false);
+            await serviceportaria.post('(PORT_ENTRADA_SAIDA)', {
+                caller: 0,
+                user: values?.user,
+                codigo: values?.codigo,
+                acao: values?.acao,
+                peso: values?.peso
+            })
+                .then(async (response) => {
+                    const { success, message } = response.data.genericResponse;
+                    if (!success) {
+                        Alert.alert('Error', message);
+                        return;
+                    }
+                    const resp = values?.acao === '2' ? 'Saída' : 'Entrada';
+                    Alert.alert('Sucesso', `${resp} de carga registrada com sucesso!`);
+                    await serviceportaria
+                        .post("(PORT_STATUS_VEICULOS)", {
+                            caller: 0,
+                            filial: user?.filial,
+                            status: `${status}`,
+                        })
+                        .then((result) => {
+                            const { success, data } = result.data.veiculos;
+                            setLoading(false);
+                            setListStatus(data);
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
 
         const getPesoCarga = async () => {
-            setLoadingBalanca(true);
+            setLoadingpeso(true);
             setPesoCarga('Aguarde processando...');
             await serviceportaria.post('(PORT_CAPTURA_PESO)', {
                 caller: 0,
@@ -114,7 +154,7 @@ const StatusCarga = () => {
                 .then((response) => {
                     const { peso } = response.data.peso;
                     setPesoCarga(`${peso}`);
-                    setLoadingBalanca(false);
+                    setLoadingpeso(false);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -145,9 +185,10 @@ const StatusCarga = () => {
                                         enableReinitialize
                                         validationSchema={""}
                                         initialValues={{
+                                            user: user?.code,
                                             codigo: statusCarga.codigo,
-                                            balanca: pesoCarga,
-                                            status: status === '3' ? '2' : '1'
+                                            peso: pesoCarga,
+                                            acao: status === '3' ? '2' : '1'
                                         }}
                                         onSubmit={onsubmit}
                                     >
@@ -167,16 +208,16 @@ const StatusCarga = () => {
                                                         <View className="flex-1">
                                                             <TextInput
                                                                 className={``}
-                                                                onChangeText={handleChange("balanca")}
-                                                                onBlur={() => setFieldTouched("balanca")}
-                                                                value={values.balanca}
+                                                                onChangeText={handleChange("peso")}
+                                                                onBlur={() => setFieldTouched("peso")}
+                                                                value={values.peso}
                                                                 autoCapitalize="characters"
                                                             />
                                                         </View>
                                                         <View className="">
-                                                            {loadingBalanca
+                                                            {loadingpeso
                                                                 ? <ActivityIndicator size="small" color="#F18800" />
-                                                                : <MaterialCommunityIcons name="scale" size={25} color="#F18800" onPress={getPesoCarga} />
+                                                                : <MaterialCommunityIcons name="scale" size={25} color="#374151" onPress={getPesoCarga} />
                                                             }
                                                         </View>
                                                     </View>

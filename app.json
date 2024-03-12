@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "app-portaria",
+    "name": "Portaria",
     "slug": "app-portaria",
     "scheme": "app-portaria",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "icon": "./assets/icon.png",

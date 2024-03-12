@@ -32,15 +32,9 @@ const SaidasPendentes = () => {
           filial: user?.filial,
         })
         .then((response) => {
-          if (response.data.visita.success) {
-            setTimeout(() => {
-              setLoading(false);
-              setVisitasPendentes(response.data.visita.data);
-            }, 500);
-          } else {
-            setLoading(false);
-            return;
-          }
+          setLoading(false);
+          const { success, data } = response.data.visita;
+          setVisitasPendentes(data);
         });
     };
     getVisitasAbertas();
@@ -55,13 +49,12 @@ const SaidasPendentes = () => {
           await serviceportaria
             .post(`(PORT_ALTERA_VISITA)`, {
               status: 2,
-              user: 7023, //user.code,
+              user: user?.code, //user.code,
               ident: vid,
               dsaida: vDate,
               hsaida: vHour,
             })
             .then((response) => {
-              if (response.data.visita.success) {
                 Alert.alert("Atenção", "Horário de saída registrado.", [
                   {
                     text: "Ok",
@@ -71,20 +64,15 @@ const SaidasPendentes = () => {
                         .post(`(PORT_LISTA_VISITA)`, {
                           status: 1,
                           data: moment(dateTop).format("YYYYMMDD"),
-                          filial: 1, //user.filial
+                          filial: user?.filial, //user.filial
                         })
                         .then((response) => {
-                          setTimeout(() => {
                             setLoading(false);
                             setVisitasPendentes(response.data.visita.data);
-                          }, 500);
                         });
                     },
                   },
                 ]);
-              } else {
-                Alert.alert("Atenção", `${response.data.visita.message}`);
-              }
             })
             .catch((error) => {
               console.log(error);
@@ -202,7 +190,7 @@ const SaidasPendentes = () => {
                   color="#29ABE2"
                   onPress={() =>
                     router.push({
-                      pathname: "solar/infovisitanteentrada",
+                      pathname: "naturovos/nregistervisitors/infovisitanteentrada",
                       params: { ident: mt.ident, nome: mt.nome },
                     })
                   }

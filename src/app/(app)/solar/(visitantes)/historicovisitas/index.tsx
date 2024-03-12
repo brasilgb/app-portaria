@@ -3,11 +3,11 @@ import { View, Text, ScrollView, Alert } from "react-native";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
-import serviceportaria from "../../../../services/serviceportaria";
-import { maskHour } from "../../../../utils/masks";
+import serviceportaria from "../../../../../services/serviceportaria";
+import { maskHour } from "../../../../../utils/masks";
 import { router } from "expo-router";
-import Loading from "../../../../components/Loading";
-import { AuthContext } from "../../../../contexts/auth";
+import Loading from "../../../../../components/Loading";
+import { AuthContext } from "../../../../../contexts/auth";
 
 const HistoricoVisitas = () => {
   const { user } = useContext(AuthContext);
@@ -27,15 +27,9 @@ const HistoricoVisitas = () => {
           filial: user?.filial,
         })
         .then((response) => {
-          if (response.data.visita.success) {
-            setTimeout(() => {
-              setLoading(false);
-              setVisitasPendentes(response.data.visita.data);
-            }, 500);
-          } else {
-            setLoading(false);
-            return;
-          }
+          const { success, data } = response.data.visita;
+          setVisitasPendentes(data);
+          setLoading(false);
         });
     };
     getVisitasAbertas();
@@ -52,7 +46,6 @@ const HistoricoVisitas = () => {
         hsaida: 0,
       })
       .then(async (response) => {
-        if (response.data.visita.success) {
           Alert.alert("Atenção", "Horário de saída revertido.", [
             {
               text: "ok",
@@ -71,7 +64,6 @@ const HistoricoVisitas = () => {
               },
             },
           ]);
-        }
       })
       .catch((error) => {
         console.log(error);

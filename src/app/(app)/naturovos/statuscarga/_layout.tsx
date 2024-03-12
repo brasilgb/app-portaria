@@ -40,7 +40,7 @@ const NaturovosLayout = () => {
           href="naturovos/nregistervisitors"
         >
           <Pressable>
-            <MaterialCommunityIcons name="car-side" size={26} />
+            <MaterialCommunityIcons name="account-plus" size={26} />
             <Text className="ml-2">Cadastrar visitante</Text>
           </Pressable>
         </Link>

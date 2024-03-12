@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../contexts/auth";
+import { AuthContext } from "../../contexts/auth";
 import { Formik } from "formik";
 import schema from "./schema";
 import { StatusBar } from "expo-status-bar";
@@ -19,6 +19,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Loading from "@/components/Loading";
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
+
 interface SignInProps {
   code: string;
   filial: string;
@@ -27,10 +28,10 @@ interface SignInProps {
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const { user, signIn, validateUser, historyFilial } = useContext(AuthContext);
-  const [selectedPortaria, setSelectedPortaria] = useState(historyFilial);
   const [showPassword, setShowPassword] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPortaria, setSelectedPortaria] = useState(historyFilial);
 
   const handlePortaria = (option: any) => {
     setModalVisible(false);
@@ -107,7 +108,7 @@ const SignIn = () => {
         <ModalFilial />
         <View className="py-8">
           <Image
-            source={require("../../assets/logo-solar.png")}
+            source={require("../../../assets/logo-solar.png")}
             className="w-[320px] h-[116px]"
           />
         </View>
@@ -116,8 +117,9 @@ const SignIn = () => {
           initialValues={{
             code: "",
             password: "",
-            filial: "",
+            filial: selectedPortaria,
           }}
+          enableReinitialize
           onSubmit={onsubmit}
         >
           {({
@@ -133,24 +135,20 @@ const SignIn = () => {
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
                 <View pointerEvents="none" className="mt-6 flex-col items-center justify-center">
                   <TextInput
-                    className={`rounded-full border-4 ${selectedPortaria === '1' ? 'border-solar-blue-dark text-4xl' : selectedPortaria === '26' ? 'border-solar-yellow-dark text-4xl' : 'border-solar-blue-light bg-white text-xl'} w-32 h-32 text-gray-700 text-center font-bold flex-row items-center justify-center`}
+                    className={`rounded-full border-4 ${touched && errors.filial ? 'border-red-600 text-2xl' : selectedPortaria === '1' ? 'border-solar-blue-dark text-4xl' : selectedPortaria === '26' ? 'border-solar-yellow-dark text-4xl' : 'border-solar-blue-light bg-white text-xl'} w-32 h-32 text-gray-700 text-center font-bold flex-row items-center justify-center`}
                     onChangeText={handleChange("filial")}
                     onBlur={() => setFieldTouched("filial")}
-                    value={(values.filial = selectedPortaria)}
+                    value={(values.filial)}
                     placeholder="FILIAL"
                   />
                 </View>
-                {touched && errors && (
-                  <Text className="self-end pr-6 pt-1 text-base text-red-600">
-                    {errors.filial}
-                  </Text>
-                )}
+
               </Pressable>
 
               <View className="mt-6">
                 <Text className="label-form">Usuário</Text>
                 <TextInput
-                  className={`input-form `}
+                  className={`input-form ${touched && errors.code && 'border border-red-600'}`}
                   onChangeText={handleChange("code")}
                   onBlur={() => setFieldTouched("code")}
                   value={values.code}
@@ -165,7 +163,7 @@ const SignIn = () => {
               <View className="mt-6 relative">
                 <Text className="label-form">Senha</Text>
                 <TextInput
-                  className={`input-form`}
+                  className={`input-form ${touched && errors.password && 'border border-red-600'}`}
                   onChangeText={handleChange("password")}
                   onBlur={() => setFieldTouched("password")}
                   value={values.password}

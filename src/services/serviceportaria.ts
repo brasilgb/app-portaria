@@ -11,8 +11,8 @@ const serviceportaria = axios.create({
 
 serviceportaria.interceptors.request.use(async (request) => {
 
-  request.baseURL = `http://172.16.1.215:9090/servicesgruposolar/servlet/isCobol`;
-  BASE_URL = `http://172.16.1.215:9090/servicesgruposolar/servlet/isCobol`;
+  request.baseURL = `http://172.16.1.46:8080/servicesgruposolar/servlet/isCobol`;
+  BASE_URL = `http://172.16.1.46:8080/servicesgruposolar/servlet/isCobol`;
   // request.baseURL = `https://services.gruposolar.com.br:8086/servicesgruposolar/servlet/isCobol`;
   // BASE_URL = `https://services.gruposolar.com.br:8086/servicesgruposolar/servlet/isCobol`;
   request.baseURL = request.baseURL;

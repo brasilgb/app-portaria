@@ -80,7 +80,7 @@ const Solar = () => {
                 <View className="my-4">
                   {/* <FormObserver /> */}
                   <View className="">
-                    <Text className="label-form">CPF do Motorista</Text>
+                    <Text className="label-form">CPF do visitante</Text>
 
                     <TextInput
                       className={`input-form ${touched && errors.cpf

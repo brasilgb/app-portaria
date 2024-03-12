@@ -1,13 +1,13 @@
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import React, { useContext, useState } from "react";
-import { ButtonAction } from "../../../components/Buttons";
+import { ButtonAction } from "../../../../components/Buttons";
 import { Formik } from "formik";
 import schema from "./schema";
 import { cpf } from "cpf-cnpj-validator";
-import serviceportaria from "../../../services/serviceportaria";
+import serviceportaria from "../../../../services/serviceportaria";
 import { router } from "expo-router";
-import Loading from "../../../components/Loading";
-import { AuthContext } from "../../../contexts/auth";
+import Loading from "../../../../components/Loading";
+import { AuthContext } from "../../../../contexts/auth";
 
 interface HomeProps {
   cpf: string;

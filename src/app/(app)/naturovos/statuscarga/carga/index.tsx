@@ -45,7 +45,6 @@ const Naturovos = () => {
   const [masterData, setMasterData] = useState([]);
   const [tipoEntradaCarga, setTipoEntradaCarga] = useState<number>(1);
 
-
   const onsubmit = async (values: RegisterProps, { resetForm }: any) => {
     setLoading(true);
     await serviceportaria.post(`(PORT_CHEGADA)`, {
@@ -70,6 +69,7 @@ const Naturovos = () => {
           Alert.alert('Error', message);
           return;
         }
+        setTransportadora([]);
         router.push({
           pathname: "naturovos/registered",
           params: { motorista: values.motorista, register: 1 }, // valor 1 = carga
@@ -134,10 +134,6 @@ const Naturovos = () => {
     setSearch("");
     setModalVisible(false);
   };
-
-  // useEffect(() => {
-  //   console.log('JSON.stringify(Formik)');
-  // }, []);
 
   return (
     <>
@@ -249,7 +245,7 @@ const Naturovos = () => {
                           </Text>
                         )}
                       </View>
-                      <MaterialIcons onPress={() => setTransportadora([])} name="cleaning-services" className="absolute right-4 top-11" size={25} color="#F18800" />
+                      <MaterialIcons onPress={() => setTransportadora([])} name="cleaning-services" className="absolute right-4 top-11" size={25} color="#374151" />
                     </Pressable>
                     <View>
                       <Text className="label-form">Transportadora</Text>
