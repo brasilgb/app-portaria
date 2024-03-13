@@ -33,7 +33,6 @@ const InfoVisitanteEntrada = () => {
 
   const [visitasInfo, setVisitasInfo] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  console.log('data');
 
   useEffect(() => {
     const getVisitasAbertas = async () => {

@@ -179,7 +179,7 @@ const AlterPassword = () => {
                                     </Pressable>
                                     <View className="items-center my-6">
                                         <Text className="text-sm text-gray-400 font-Poppins_500Medium">
-                                            Grupo Solar - App Portaria v{process.env.EXPO_PUBLIC_APP_VERSION}
+                                            Grupo Solar - Controle de Portaria v{process.env.EXPO_PUBLIC_APP_VERSION}
                                         </Text>
                                     </View>
                                 </View>

@@ -132,26 +132,29 @@ const SignIn = () => {
             isValid,
           }) => (
             <View className="bg-gray-200 px-8 pt-10 w-10/12 rounded">
+
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
                 <View pointerEvents="none" className="mt-6 flex-col items-center justify-center">
                   <TextInput
-                    className={`rounded-full border-4 ${touched && errors.filial ? 'border-red-600 text-2xl' : selectedPortaria === '1' ? 'border-solar-blue-dark text-4xl' : selectedPortaria === '26' ? 'border-solar-yellow-dark text-4xl' : 'border-solar-blue-light bg-white text-xl'} w-32 h-32 text-gray-700 text-center font-bold flex-row items-center justify-center`}
+                    className={`relative rounded-full border-4 ${touched && errors.filial ? 'border-red-600 text-2xl' : selectedPortaria === '1' ? 'border-solar-blue-dark text-4xl' : selectedPortaria === '26' ? 'border-solar-yellow-dark text-4xl' : 'border-solar-blue-light bg-white text-xl'} w-32 h-32 text-gray-700 text-center font-bold flex-row items-center justify-center`}
                     onChangeText={handleChange("filial")}
                     onBlur={() => setFieldTouched("filial")}
                     value={(values.filial)}
                     placeholder="FILIAL"
                   />
+                {selectedPortaria && <Text className={`absolute bottom-6 text-lg font-medium text-gray-700`}>{selectedPortaria === '1' ? "Matriz" : "Naturovos"}</Text>}
                 </View>
-
               </Pressable>
-
-              <View className="mt-6">
+              <View className="mt-2">
                 <Text className="label-form">Usuário</Text>
                 <TextInput
                   className={`input-form ${touched && errors.code && 'border border-red-600'}`}
                   onChangeText={handleChange("code")}
                   onBlur={() => setFieldTouched("code")}
                   value={values.code}
+                  autoCorrect={false}
+                  spellCheck={false}
+                  autoComplete="off"
                 />
                 {touched && errors && (
                   <Text className="self-end pr-6 pt-1 text-base text-red-600">
@@ -212,7 +215,7 @@ const SignIn = () => {
               </Pressable>
               <View className="items-center my-6">
                 <Text className="text-sm text-gray-400 font-Poppins_500Medium">
-                  Grupo Solar - App Portaria v{process.env.EXPO_PUBLIC_APP_VERSION}
+                  Grupo Solar - Controle de Portaria v{process.env.EXPO_PUBLIC_APP_VERSION}
                 </Text>
               </View>
             </View>

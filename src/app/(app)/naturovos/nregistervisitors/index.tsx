@@ -59,12 +59,12 @@ const Solar = () => {
 
           <View>
             <Formik
-              enableReinitialize
               validationSchema={schemadoc}
               initialValues={{
                 cpf: " ",
                 pedido: " ",
               }}
+              enableReinitialize
               onSubmit={onsubmit}
             >
               {({
@@ -90,6 +90,9 @@ const Solar = () => {
                       onChangeText={handleChange("cpf")}
                       onBlur={() => setFieldTouched("cpf")}
                       value={cpf.format(values.cpf)}
+                      autoComplete="off"
+                      autoCorrect={false}
+                      keyboardType="numeric"
                     />
                     {touched && errors && (
                       <Text className="self-end pr-6 pt-1 text-xs text-red-600">
@@ -107,6 +110,7 @@ const Solar = () => {
                       onChangeText={handleChange("pedido")}
                       onBlur={() => setFieldTouched("pedido")}
                       value={values.pedido}
+                      keyboardType="numeric"
                     />
                     {touched && errors && (
                       <Text className="self-end pr-6 pt-1 text-xs text-red-600 font-">
