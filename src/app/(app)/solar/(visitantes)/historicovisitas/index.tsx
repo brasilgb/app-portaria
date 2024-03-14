@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { View, Text, ScrollView, Alert } from "react-native";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
 import serviceportaria from "../../../../../services/serviceportaria";
 import { maskHour } from "../../../../../utils/masks";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import Loading from "../../../../../components/Loading";
 import { AuthContext } from "../../../../../contexts/auth";
 
@@ -17,23 +17,25 @@ const HistoricoVisitas = () => {
   const [dateTop, setDateTop] = useState(new Date());
   const [showDateTop, setShowDateTop] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    const getVisitasAbertas = async () => {
-      await serviceportaria
-        .post(`(PORT_LISTA_VISITA)`, {
-          status: 2,
-          data: moment(dateTop).format("YYYYMMDD"),
-          filial: user?.filial,
-        })
-        .then((response) => {
-          const { success, data } = response.data.visita;
-          setVisitasPendentes(data);
-          setLoading(false);
-        });
-    };
-    getVisitasAbertas();
-  }, [dateTop]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      const getVisitasAbertas = async () => {
+        await serviceportaria
+          .post(`(PORT_LISTA_VISITA)`, {
+            status: 2,
+            data: moment(dateTop).format("YYYYMMDD"),
+            filial: user?.filial,
+          })
+          .then((response) => {
+            const { success, data } = response.data.visita;
+            setVisitasPendentes(data);
+            setLoading(false);
+          });
+      };
+      getVisitasAbertas();
+    }, [dateTop])
+  )
 
   const handleExitVisita = async (vid: number) => {
     setBColor(vid);
@@ -46,24 +48,24 @@ const HistoricoVisitas = () => {
         hsaida: 0,
       })
       .then(async (response) => {
-          Alert.alert("Atenção", "Horário de saída revertido.", [
-            {
-              text: "ok",
-              onPress: async () => {
-                setLoading(true);
-                await serviceportaria
-                  .post(`(PORT_LISTA_VISITA)`, {
-                    status: 2,
-                    data: moment(dateTop).format("YYYYMMDD"),
-                    filial: user?.filial,
-                  })
-                  .then((response) => {
-                    setLoading(false);
-                    setVisitasPendentes(response.data.visita.data);
-                  });
-              },
+        Alert.alert("Atenção", "Horário de saída revertido.", [
+          {
+            text: "ok",
+            onPress: async () => {
+              setLoading(true);
+              await serviceportaria
+                .post(`(PORT_LISTA_VISITA)`, {
+                  status: 2,
+                  data: moment(dateTop).format("YYYYMMDD"),
+                  filial: user?.filial,
+                })
+                .then((response) => {
+                  setLoading(false);
+                  setVisitasPendentes(response.data.visita.data);
+                });
             },
-          ]);
+          },
+        ]);
       })
       .catch((error) => {
         console.log(error);
@@ -92,7 +94,7 @@ const HistoricoVisitas = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4">
+          <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4">
             <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
               Histórico de visitas
             </Text>
@@ -126,9 +128,8 @@ const HistoricoVisitas = () => {
             {visitasPendentes?.map((mt: any, index: any) => (
               <View
                 key={mt.cpf + index}
-                className={`${
-                  index % 2 ? "bg-blue-50" : "bg-gray-50"
-                } flex-row items-center justify-between border-b border-x border-gray-300`}
+                className={`${index % 2 ? "bg-blue-50" : "bg-gray-50"
+                  } flex-row items-center justify-between border-b border-x border-gray-300`}
               >
                 <Ionicons
                   name="alert-circle"

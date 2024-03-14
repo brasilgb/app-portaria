@@ -1,7 +1,7 @@
 import TextoModal from "@/components/TextoModal";
 import Loading from "../../../../../components/Loading";
 import serviceportaria from "../../../../../services/serviceportaria";
-import { maskHour } from "../../../../../utils/masks";
+import { hiddenCpf, maskHour } from "../../../../../utils/masks";
 import { cpf } from "cpf-cnpj-validator";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import moment from "moment";
@@ -60,14 +60,14 @@ const InfoVisitanteEntrada = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4">
+          <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4">
             <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
               Informações do visitante
             </Text>
           </View>
           <View className="bg-white border border-gray-300 rounded-lg">
             <TextoModal title="Visitante" value={visitasInfo.nome} />
-            <TextoModal title="CPF" value={cpf.format(`${("00000000000" + visitasInfo.cpf).slice(-11)}`)} />
+            <TextoModal title="CPF" value={hiddenCpf(`${("00000000000" + visitasInfo.cpf).slice(-11)}`)} />
             <TextoModal title="Placa" value={visitasInfo.placa} />
             <TextoModal title="Fornecedor" value={visitasInfo.fornecedor} />
             <TextoModal title="Transportadora" value={visitasInfo.transportadora} />

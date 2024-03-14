@@ -13,6 +13,11 @@ function maskCpf(value: string) {
     value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     return value;
 };
+function hiddenCpf(value: string) {
+    value = value.replace(/\D/g, "");
+    value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, "***.$2.$3-**");
+    return value;
+};
 function maskDate(value: string) {
     value = value.replace(/\D/g, "");
     value = value.replace(/^(\d{2})(\d{2})(\d{4})/, "$1/$2/$3");
@@ -29,4 +34,4 @@ function unMask(value: string) {
 };
 
 
-export { maskCep, maskCelular, maskDate, unMask, maskHour, maskCpf };
+export { maskCep, maskCelular, maskDate, unMask, maskHour, maskCpf, hiddenCpf };

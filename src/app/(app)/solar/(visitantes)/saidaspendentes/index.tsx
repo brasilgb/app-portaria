@@ -1,11 +1,11 @@
 import { View, Text, Alert, ScrollView } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import serviceportaria from "../../../../../services/serviceportaria";
 import moment from "moment";
 import DatePicker from "@react-native-community/datetimepicker";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { maskHour } from "../../../../../utils/masks";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { AuthContext } from "../../../../../contexts/auth";
 import Loading from "../../../../../components/Loading";
 
@@ -22,23 +22,25 @@ const SaidasPendentes = () => {
   const [newIndex, setNewIndex] = useState();
   const [bColor, setBColor] = useState(0);
 
-  useEffect(() => {
-    setLoading(true);
-    const getVisitasAbertas = async () => {
-      await serviceportaria
-        .post(`(PORT_LISTA_VISITA)`, {
-          status: 1,
-          data: moment(dateTop).format("YYYYMMDD"),
-          filial: user?.filial,
-        })
-        .then((response) => {
-          const { success, data } = response.data.visita;
-          setVisitasPendentes(data);
-          setLoading(false);
-        });
-    };
-    getVisitasAbertas();
-  }, [dateTop]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      const getVisitasAbertas = async () => {
+        await serviceportaria
+          .post(`(PORT_LISTA_VISITA)`, {
+            status: 1,
+            data: moment(dateTop).format("YYYYMMDD"),
+            filial: user?.filial,
+          })
+          .then((response) => {
+            const { success, data } = response.data.visita;
+            setVisitasPendentes(data);
+            setLoading(false);
+          });
+      };
+      getVisitasAbertas();
+    }, [dateTop])
+  )
 
   const handleExitVisita = (vid: number, vDate: any, vHour: any) => {
     Alert.alert("Registrar saída", "Quer registrar esta saída?", [
@@ -152,7 +154,7 @@ const SaidasPendentes = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="flex-col items-center justify-center border-b border-b-gray-300 py-2 mb-4 border-t-4 border-t-red-500">
+          <View className="flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4 border-t-4 border-t-red-500">
             <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
               Saídas pendentes
             </Text>
@@ -186,9 +188,8 @@ const SaidasPendentes = () => {
             {visitasPendentes?.map((mt: any, index: any) => (
               <View
                 key={mt.cpf + index}
-                className={`${
-                  index % 2 ? "bg-blue-50" : "bg-red-50"
-                } flex-row items-center justify-between border-b border-x border-gray-300`}
+                className={`${index % 2 ? "bg-blue-50" : "bg-red-50"
+                  } flex-row items-center justify-between border-b border-x border-gray-300`}
               >
                 <Ionicons
                   name="alert-circle"

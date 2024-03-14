@@ -343,7 +343,7 @@ const Naturovos = () => {
                       <View className="flex-1">
                         <Pressable className="flex-row items-center justify-start" onPress={() => setTipoEntradaCarga(3)}>
                           <Ionicons name={tipoEntradaCarga === 3 ? "radio-button-on" : "radio-button-off"} size={22} color="#F18800" />
-                          <Text className={`ml-1 label-form`}>Ovos integrados</Text>
+                          <Text className={`ml-1 label-form`}>Integrados/Transf.</Text>
                         </Pressable>
                       </View>
                     </View>

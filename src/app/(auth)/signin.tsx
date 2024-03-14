@@ -7,8 +7,6 @@ import {
   Modal,
   TouchableOpacity,
   Dimensions,
-  KeyboardAvoidingView,
-  ScrollView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/auth";
@@ -28,7 +26,7 @@ interface SignInProps {
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false);
-  const { user, signIn, validateUser, historyFilial } = useContext(AuthContext);
+  const { signIn, validateUser, historyFilial } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPortaria, setSelectedPortaria] = useState(historyFilial);
@@ -40,9 +38,6 @@ const SignIn = () => {
 
   const onsubmit = async (values: SignInProps, { resetForm }: any) => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
     const resp = await validateUser({ alternative: `${values.code}` });
     const logged = await signIn({
       code: resp.userCode,
@@ -51,9 +46,9 @@ const SignIn = () => {
       password: values.password,
     });
     if (logged) {
-      setLoading(false);
       resetForm({});
     }
+    setLoading(false);
   };
 
   const ModalFilial = () => {
@@ -133,7 +128,7 @@ const SignIn = () => {
           }) => (
             <View className="bg-gray-200 px-8 pt-10 w-10/12 rounded">
 
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Pressable onPress={() => setModalVisible(true)}>
                 <View pointerEvents="none" className="mt-6 flex-col items-center justify-center">
                   <TextInput
                     className={`relative rounded-full border-4 ${touched && errors.filial ? 'border-red-600 text-2xl' : selectedPortaria === '1' ? 'border-solar-blue-dark text-4xl' : selectedPortaria === '26' ? 'border-solar-yellow-dark text-4xl' : 'border-solar-blue-light bg-white text-xl'} w-32 h-32 text-gray-700 text-center font-bold flex-row items-center justify-center`}
@@ -142,7 +137,7 @@ const SignIn = () => {
                     value={(values.filial)}
                     placeholder="FILIAL"
                   />
-                {selectedPortaria && <Text className={`absolute bottom-6 text-lg font-medium text-gray-700`}>{selectedPortaria === '1' ? "Matriz" : "Naturovos"}</Text>}
+                  {selectedPortaria && <Text className={`absolute bottom-6 text-lg font-medium text-gray-700`}>{selectedPortaria === '1' ? "Matriz" : "Naturovos"}</Text>}
                 </View>
               </Pressable>
               <View className="mt-2">
@@ -155,6 +150,7 @@ const SignIn = () => {
                   autoCorrect={false}
                   spellCheck={false}
                   autoComplete="off"
+                  keyboardType="numeric"
                 />
                 {touched && errors && (
                   <Text className="self-end pr-6 pt-1 text-base text-red-600">

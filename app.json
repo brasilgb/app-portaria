@@ -3,7 +3,7 @@
     "name": "Controle de Portaria",
     "slug": "app-portaria",
     "scheme": "app-portaria",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -44,7 +44,8 @@
       }
     },
     "android": {
-      "package": "com.andersonbrodrigues.appportaria"
+      "package": "com.andersonbrodrigues.appportaria",
+      "versionCode": 2
     }
   }
 }

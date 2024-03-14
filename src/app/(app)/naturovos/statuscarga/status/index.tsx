@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Dimensions, TextInput, Pressable, ActivityIndicator, Alert } from "react-native";
+import { View, Text, Modal, TouchableOpacity, Dimensions, TextInput, Pressable, ActivityIndicator, Alert, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import serviceportaria from "../../../../../services/serviceportaria";
@@ -96,6 +96,7 @@ const StatusCarga = () => {
                                 <TextoModal title="Motorista" value={infoCarga.motorista} />
                                 <TextoModal title="Produto" value={infoCarga.produto} />
                                 <TextoModal title="Data/Hora chegada" value={infoCarga.dhChegada} />
+                                {infoCarga.setor && <TextoModal title="Setor" value={infoCarga.setor} />}
                                 <TextoModal title="Status" value={infoCarga.status} />
                             </View>
                         </View>
@@ -255,63 +256,68 @@ const StatusCarga = () => {
             <Loading visible={loading} spinercolor="#F18800" />
             <ModalInfoCarga />
             <ModalStatusCarga />
-            <View className={`border-t-4 ${status === '1' ? 'border-green-500' : status === '2' ? 'border-orange-500' : 'border-blue-500'}`}>
-                <View className={`flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4`}>
-                    <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
-                        Cargas aguardando {NameStatusCarga(status)}
-                    </Text>
-                </View>
-                <View className="p-1 bg-white border-gray-300 rounded-md">
-                    <View className="bg-gray-100 flex-row items-center justify-start border-y border-x border-gray-300">
-                        <MaterialCommunityIcons name="information" size={28} color={'#f1f1f1'} />
-                        <Text className="pl-1 w-16 px-1 py-3 border-r border-gray-300 text-base font-medium">
-                            Código
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <View className={`border-t-4 ${status === '1' ? 'border-green-500' : status === '2' ? 'border-orange-500' : 'border-blue-500'}`}>
+                    <View className={`flex-col items-start justify-center border-b border-b-gray-300 py-2 mb-4`}>
+                        <Text className="text-lg uppercase text-solar-blue-dark font-semibold">
+                            Cargas aguardando {NameStatusCarga(status)}
                         </Text>
-                        <Text className="pl-1 w-16 py-3 border-r border-gray-300 text-base font-medium">
-                            Pager
-                        </Text>
-                        <Text className="pl-1 w-24 py-3 border-r border-gray-300 text-base font-medium">
-                            Placa
-                        </Text>
-                        <Text className="pl-1 w-44 py-3 border-r border-gray-300 text-base font-medium">
-                            Produto
-                        </Text>
-                        <Text className="pl-1 py-3 text-base font-medium">Data/Hora</Text>
-                        <Text></Text>
                     </View>
-                    {listStatus &&
-                        listStatus.map((list: any, idx: number) => (
-                            <View
-                                key={idx}
-                                className={`${idx % 2 ? "bg-blue-50" : "bg-gray-50"
-                                    } flex-row items-center justify-start border-b border-x border-gray-300`}
-                            >
-                                <MaterialCommunityIcons name="information" size={28} color={'#17A2B8'} onPress={() => handleInfoCarga(list)} />
-                                <Text className="pl-1 w-16 px-1 py-3 border-r border-gray-300 text-base font-normal">
-                                    {list.codigo}
-                                </Text>
-                                <Text className="pl-1 w-16 py-3 border-r border-gray-300 px-1 text-base font-normal">
-                                    {list.pager}
-                                </Text>
-                                <Text className="pl-1 w-24 py-3 border-r border-gray-300 text-base font-normal">
-                                    {list.placa}
-                                </Text>
-                                <Text className="pl-1 w-44 py-3 border-r border-gray-300 text-base font-normal">
-                                    {list.produto}
-                                </Text>
-                                <Text className="pl-1 w-44 mr-1 text-base font-normal">
-                                    {list.dhChegada}
-                                </Text>
-                                <View className="flex-row items-center justify-end">
-                                    {status === '3'
-                                        ? <MaterialCommunityIcons name="arrow-right-bold-box" size={28} color={'#2085d8'} onPress={() => handleStatusCarga(list)} />
-                                        : <MaterialCommunityIcons name="arrow-left-bold-box" size={28} color={'#F18800'} onPress={() => handleStatusCarga(list)} />
-                                    }
+                    <View className="p-1 bg-white border-gray-300 rounded-md">
+                        <View className="bg-gray-100 flex-row items-center justify-start border-y border-x border-gray-300">
+                            <MaterialCommunityIcons name="information" size={28} color={'#f1f1f1'} />
+                            <Text className="pl-1 w-16 px-1 py-3 border-r border-gray-300 text-base font-medium">
+                                Código
+                            </Text>
+                            <Text className="pl-1 w-16 py-3 border-r border-gray-300 text-base font-medium">
+                                Pager
+                            </Text>
+                            <Text className="pl-1 w-24 py-3 border-r border-gray-300 text-base font-medium">
+                                Placa
+                            </Text>
+                            <Text className="pl-1 w-44 py-3 border-r border-gray-300 text-base font-medium">
+                                Produto
+                            </Text>
+                            <Text className="pl-1 py-3 text-base font-medium">Data/Hora</Text>
+                            <Text></Text>
+                        </View>
+                        {listStatus &&
+                            listStatus.map((list: any, idx: number) => (
+                                <View
+                                    key={idx}
+                                    className={`${idx % 2 ? "bg-blue-50" : "bg-gray-50"
+                                        } flex-row items-center justify-start border-b border-x border-gray-300`}
+                                >
+                                    <MaterialCommunityIcons name="information" size={28} color={'#17A2B8'} onPress={() => handleInfoCarga(list)} />
+                                    <Text className="pl-1 w-16 px-1 py-3 border-r border-gray-300 text-base font-normal">
+                                        {list.codigo}
+                                    </Text>
+                                    <Text className="pl-1 w-16 py-3 border-r border-gray-300 px-1 text-base font-normal">
+                                        {list.pager}
+                                    </Text>
+                                    <Text className="pl-1 w-24 py-3 border-r border-gray-300 text-base font-normal">
+                                        {list.placa}
+                                    </Text>
+                                    <Text className="pl-1 w-44 py-3 border-r border-gray-300 text-base font-normal">
+                                        {list.produto}
+                                    </Text>
+                                    <Text className="pl-1 w-44 mr-1 text-base font-normal">
+                                        {list.dhChegada}
+                                    </Text>
+                                    <View className="flex-row items-center justify-end">
+                                        {status === '3'
+                                            ? <MaterialCommunityIcons name="arrow-right-bold-box" size={28} color={'#2085d8'} onPress={() => handleStatusCarga(list)} />
+                                            : <MaterialCommunityIcons name="arrow-left-bold-box" size={28} color={'#F18800'} onPress={() => handleStatusCarga(list)} />
+                                        }
+                                    </View>
                                 </View>
-                            </View>
-                        ))}
+                            ))}
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
         </>
     );
 };
